@@ -14,9 +14,9 @@ COPY packages/api/package.json packages/api/
 COPY tsconfig.json ./
 RUN ls -la tsconfig.json
 
-# 安装依赖（绕过 esbuild 脚本问题）
+# 安装依赖（使用 --shamefully-hoist 解决 monorepo 链接问题）
 RUN pnpm approve-builds || true
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 RUN pnpm rebuild esbuild
 
 # 复制源代码
@@ -29,10 +29,6 @@ COPY tsconfig.json packages/api/
 
 # 构建 toolkit
 RUN pnpm --filter @web-tools/toolkit run build
-RUN ls -la packages/toolkit/  # 验证 dist 是否存在
-
-# 重新安装依赖，确保 workspace 链接正确
-RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # 构建 api
 RUN pnpm --filter @web-tools/api run build
@@ -40,4 +36,3 @@ RUN pnpm --filter @web-tools/api run build
 EXPOSE 8080
 
 CMD ["pnpm", "start"]
-
