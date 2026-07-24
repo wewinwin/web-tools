@@ -3,7 +3,7 @@ FROM node:22-alpine
 # 安装 pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# 设置 CI 环境变量，解决 pnpm 在非 TTY 环境下的交互问题
+# 设置 CI 环境变量
 ENV CI=true
 
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY packages/api/package.json packages/api/
 COPY tsconfig.json ./
 RUN ls -la tsconfig.json
 
-# 安装依赖（绕过 esbuild 脚本问题）
+# 安装依赖（所有 install 都加上 --ignore-scripts）
 RUN pnpm approve-builds || true
 RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 RUN pnpm rebuild esbuild
@@ -33,8 +33,8 @@ COPY tsconfig.json packages/api/
 # 构建 toolkit
 RUN pnpm --filter @web-tools/toolkit run build
 
-# 强制重新建立 workspace 链接
-RUN pnpm install --frozen-lockfile --shamefully-hoist
+# 强制重新建立 workspace 链接（也加上 --ignore-scripts）
+RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 
 # 构建 api
 RUN pnpm --filter @web-tools/api run build
