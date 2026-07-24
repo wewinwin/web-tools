@@ -21,21 +21,21 @@ COPY packages/api/tsconfig.json packages/api/
 COPY packages/api/src/ packages/api/src/
 
 # Build toolkit first, then api
-RUN pnpm --filter @web-tools/toolkit run build && \
-    pnpm --filter @web-tools/api run build
+RUN npm --filter @web-tools/toolkit run build && \
+    npm --filter @web-tools/api run build
 
 # --- Production stage ---
 FROM node:22-alpine
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g npm@latest
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml ./
 COPY packages/toolkit/package.json packages/toolkit/
 COPY packages/api/package.json packages/api/
 
-RUN pnpm install --frozen-lockfile --prod
+RUN npm install --omit=dev --legacy-peer-deps
 
 COPY --from=builder /app/packages/toolkit/dist packages/toolkit/dist
 COPY --from=builder /app/packages/api/dist packages/api/dist
