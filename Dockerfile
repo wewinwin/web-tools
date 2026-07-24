@@ -10,8 +10,10 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/toolkit/package.json packages/toolkit/
 COPY packages/api/package.json packages/api/
 
-# 安装依赖
-RUN pnpm install --frozen-lockfile
+# 安装依赖（绕过 esbuild 脚本问题）
+RUN pnpm approve-builds || true
+RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm rebuild esbuild
 
 # 复制源代码
 COPY packages/toolkit/ packages/toolkit/
