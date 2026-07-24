@@ -29,11 +29,10 @@ COPY tsconfig.json packages/api/
 
 # 构建 toolkit
 RUN pnpm --filter @web-tools/toolkit run build
+RUN ls -la packages/toolkit/  # 验证 dist 是否存在
 
-# 手动链接 toolkit 到 api 的 node_modules
-RUN mkdir -p packages/api/node_modules/@web-tools
-RUN cp -r packages/toolkit/dist packages/api/node_modules/@web-tools/toolkit
-RUN cp packages/toolkit/package.json packages/api/node_modules/@web-tools/toolkit/
+# 重新安装依赖，确保 workspace 链接正确
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # 构建 api
 RUN pnpm --filter @web-tools/api run build
@@ -41,3 +40,4 @@ RUN pnpm --filter @web-tools/api run build
 EXPOSE 8080
 
 CMD ["pnpm", "start"]
+
