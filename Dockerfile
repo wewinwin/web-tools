@@ -1,19 +1,26 @@
 FROM node:22-alpine
 
+# 安装 pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
-COPY package.json pnpm-workspace.yaml ./
+# 复制依赖文件
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/toolkit/package.json packages/toolkit/
 COPY packages/api/package.json packages/api/
 
-RUN npm install --legacy-peer-deps
+# 安装依赖（使用 pnpm）
+RUN pnpm install --frozen-lockfile
 
+# 复制源代码
 COPY packages/toolkit/ packages/toolkit/
 COPY packages/api/ packages/api/
 
-RUN npm --filter @web-tools/toolkit run build && \
-    npm --filter @web-tools/api run build
+# 构建
+RUN pnpm --filter @web-tools/toolkit run build && \
+    pnpm --filter @web-tools/api run build
 
 EXPOSE 8080
 
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
