@@ -27,8 +27,15 @@ COPY packages/api/ packages/api/
 COPY tsconfig.json packages/toolkit/
 COPY tsconfig.json packages/api/
 
-# 分别构建 toolkit 和 api（确保 toolkit 先构建完成）
+# 构建 toolkit
 RUN pnpm --filter @web-tools/toolkit run build
+
+# 手动链接 toolkit 到 api 的 node_modules
+RUN mkdir -p packages/api/node_modules/@web-tools
+RUN cp -r packages/toolkit/dist packages/api/node_modules/@web-tools/toolkit
+RUN cp packages/toolkit/package.json packages/api/node_modules/@web-tools/toolkit/
+
+# 构建 api
 RUN pnpm --filter @web-tools/api run build
 
 EXPOSE 8080
