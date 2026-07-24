@@ -10,7 +10,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/toolkit/package.json packages/toolkit/
 COPY packages/api/package.json packages/api/
 
-# 安装依赖（使用 pnpm）
+# 安装依赖
 RUN pnpm install --frozen-lockfile
 
 # 复制源代码
