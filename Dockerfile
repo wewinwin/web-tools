@@ -10,6 +10,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/toolkit/package.json packages/toolkit/
 COPY packages/api/package.json packages/api/
 
+# 复制 TypeScript 配置文件（修复 TS5083 错误）
+COPY tsconfig.json ./
+
 # 安装依赖（绕过 esbuild 脚本问题）
 RUN pnpm approve-builds || true
 RUN pnpm install --frozen-lockfile --ignore-scripts
