@@ -114,7 +114,7 @@ app.get('/stats', (_req: Request, res: Response) => {
 
 // ── Start ────────────────────────────────────────────────────────────
 
-const PORT = parseInt(process.env.PORT || '8080', 10);
+const PORT = parseInt(process.env.PORT, 10);
 app.listen(PORT, () => {
   log(`Web Tools server listening on port ${PORT}`);
   log(`  MCP:    POST /mcp`);
