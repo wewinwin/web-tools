@@ -1,0 +1,9 @@
+[build]
+builder = "nodejs"
+buildCmd = "npm install --legacy-peer-deps && npm run build"
+
+[start]
+startCmd = "node dist/index.js"
+
+[phases.setup]
+nixPkgs = ["nodejs"]
