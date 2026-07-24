@@ -1,9 +1,13 @@
 [build]
 builder = "nodejs"
-buildCmd = "NODE_OPTIONS=\"--max-old-space-size=512\" pnpm install --frozen-lockfile --shamefully-hoist && pnpm run build"
+buildCmd = "npm install --legacy-peer-deps"
 
 [start]
 startCmd = "node packages/api/dist/index.js"
 
 [phases.setup]
 nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = [
+  "npm install -g npm@latest"
