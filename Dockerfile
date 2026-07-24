@@ -6,13 +6,13 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 # Copy workspace root files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
+COPY package.json pnpm-workspace.yaml tsconfig.json ./
 
 # Copy package manifests for all packages
 COPY packages/toolkit/package.json packages/toolkit/
 COPY packages/api/package.json packages/api/
 
-RUN pnpm install --frozen-lockfile
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY packages/toolkit/tsconfig.json packages/toolkit/
