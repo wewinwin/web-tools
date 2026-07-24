@@ -3,6 +3,9 @@ FROM node:22-alpine
 # 安装 pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
+# 设置 CI 环境变量，解决 pnpm 在非 TTY 环境下的交互问题
+ENV CI=true
+
 WORKDIR /app
 
 # 复制依赖文件
@@ -30,7 +33,7 @@ COPY tsconfig.json packages/api/
 # 构建 toolkit
 RUN pnpm --filter @web-tools/toolkit run build
 
-# 强制重新建立 workspace 链接（确保 api 能找到 toolkit）
+# 强制重新建立 workspace 链接
 RUN pnpm install --frozen-lockfile --shamefully-hoist
 
 # 构建 api
