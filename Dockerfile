@@ -12,9 +12,9 @@ COPY packages/api/package.json packages/api/
 
 # 复制 TypeScript 配置文件
 COPY tsconfig.json ./
-RUN ls -la tsconfig.json  # 验证文件存在
+RUN ls -la tsconfig.json
 
-# 安装依赖
+# 安装依赖（绕过 esbuild 脚本问题）
 RUN pnpm approve-builds || true
 RUN pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm rebuild esbuild
@@ -27,9 +27,9 @@ COPY packages/api/ packages/api/
 COPY tsconfig.json packages/toolkit/
 COPY tsconfig.json packages/api/
 
-# 构建
-RUN pnpm --filter @web-tools/toolkit run build && \
-    pnpm --filter @web-tools/api run build
+# 分别构建 toolkit 和 api（确保 toolkit 先构建完成）
+RUN pnpm --filter @web-tools/toolkit run build
+RUN pnpm --filter @web-tools/api run build
 
 EXPOSE 8080
 
