@@ -1,7 +1,11 @@
 FROM node:22-alpine
 
+# 安装 pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# 设置 CI 环境变量，避免交互问题
 ENV CI=true
+
 WORKDIR /app
 
 # 1. 复制依赖清单
@@ -17,10 +21,11 @@ RUN pnpm install --frozen-lockfile
 COPY packages/toolkit/ packages/toolkit/
 COPY packages/api/ packages/api/
 
-# 4. 构建（pnpm 会自动跑到子目录去执行我们刚才改好的命令）
+# 4. 构建 (pnpm 会自动跑到子目录去执行我们刚才改好的命令)
 RUN pnpm --filter @web-tools/toolkit run build
 RUN pnpm --filter @web-tools/api run build
 
 EXPOSE 8080
-# 修改后的启动，依赖环境变量在 Railway 控制台配置
+
+# 【重要修改】因为 package.json 里加了 start 命令，这里保持原样即可
 CMD ["pnpm", "--filter", "@web-tools/api", "start"]
