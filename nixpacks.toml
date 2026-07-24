@@ -1,7 +1,6 @@
-
 [build]
 builder = "nodejs"
-buildCmd = "npm install --legacy-peer-deps"
+buildCmd = "NODE_OPTIONS=\"--max-old-space-size=512\" pnpm install --frozen-lockfile --shamefully-hoist && pnpm run build"
 
 [start]
 startCmd = "node packages/api/dist/index.js"
