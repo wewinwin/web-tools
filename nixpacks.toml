@@ -1,3 +1,4 @@
+
 [build]
 builder = "nodejs"
 buildCmd = "npm install --legacy-peer-deps"
@@ -7,14 +8,3 @@ startCmd = "node packages/api/dist/index.js"
 
 [phases.setup]
 nixPkgs = ["nodejs_20"]
-
-[phases.install]
-cmds = [
-  "npm install -g npm@latest"
-]
-
-[phases.build]
-cmds = [
-  "npm --filter @web-tools/toolkit run build",
-  "npm --filter @web-tools/api run build"
-]
